@@ -14,7 +14,8 @@ import java.util.List;
 @Repository
 public interface PortfolioRepository extends JpaRepository <Portfolio, Integer> {
     List<Portfolio> findPortfolioByOwnerEmail(String email);
-    @Query("SELECT p FROM Portfolio p where CONCAT(p.id,'',p.ownerEmail,'',p.age,'',p.nationality,'',p.message,'',p.name) LIKE %?1%")
+
+    @Query("SELECT new com.cc.creativecraze.dto.PortfolioDto(p.id, p.name, p.ownerEmail, p.age, p.nationality, p.pdf, p.image, p.message) FROM Portfolio p WHERE CONCAT(p.id, p.ownerEmail, p.age, p.nationality, p.message, p.name) LIKE %?1%")
     List<PortfolioDto> search(String keyword);
     @Query("SELECT p.pdf FROM Portfolio p WHERE p.id = :id")
     byte[] findPdfById(@Param("id") int id);

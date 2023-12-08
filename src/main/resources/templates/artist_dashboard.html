@@ -64,6 +64,16 @@
                 <i class="fas fa-fw fa-table"></i>
                 <span>Registered Portfolios</span></a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0);" onclick="showSection('otherPortfolios');">
+                <i class="fas fa-fw fa-table"></i>
+                <span>All Artist Profiles</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0);" onclick="showSection('searchResultsSection');">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Search Results</span></a>
+        </li>
 
         <!-- Nav Item - Portfolio -->
         <li class="nav-item">
@@ -89,14 +99,14 @@
                     <i class="fa fa-bars"></i>
                 </button>
 
+
                 <!-- Topbar Search -->
-                <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <form th:action="@{/artist}" method="get" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                     <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                               aria-label="Search" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search Artist..."
+                               aria-label="Search" aria-describedby="basic-addon2" name="keyword">
                         <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
+                            <button class="btn btn-primary" type="submit">
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
                         </div>
@@ -144,41 +154,36 @@
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Registered Portfolios</h6>
-                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" th:href="@{/download-artistPdf/{email}(email=${portfolios[0].ownerEmail})}">
-                                    <i class="fas fa-download fa-sm text-white-50"></i> Download pdf</a>
+                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                                   th:if="${not #lists.isEmpty(portfolio)}"
+                                   th:href="@{/download-artistPdf/{email}(email=${portfolio[0].ownerEmail})}">
+                                    <i class="fas fa-download fa-sm text-white-50"></i> Download pdf
+                                </a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <!-- Your table content -->
-                                    <table class="table table-bordered" width="100%" th:if="${not #lists.isEmpty(portfolios)}">
+                                    <table class="table table-bordered" width="100%" th:if="${not #lists.isEmpty(portfolio)}">
                                         <thead>
                                         <tr>
-                                            <th>OwnerId</th>
                                             <th>OwnerEmail</th>
                                             <th>Names</th>
                                             <th>Age</th>
                                             <th>Nationality</th>
                                             <th>Description</th>
-                                            <th>Portfolio</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
 
                                         <tbody>
-                                        <tr th:each="item: ${portfolios}">
-                                            <td th:text="${item.id}"></td>
+                                        <tr th:each="item: ${portfolio}" th:if="${not #lists.isEmpty(portfolio)}">
                                             <td th:text="${item.ownerEmail}"></td>
                                             <td th:text="${item.name}"></td>
                                             <td th:text="${item.age}"></td>
                                             <td th:text="${item.nationality}"></td>
                                             <td th:text="${item.message}"></td>
                                             <td>
-                                                <a th:href="@{/download-portfolio-pdf/{id}(id=${item.id})}" class="btn btn-primary">
-                                                    <i class="fas fa-download fa-sm text-white-50"></i> Download Portfolio
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a th:href="@{/update-artist/{id}(id=${item.id})}" class="btn btn-warning">Edit</a>
+                                                <a th:href="@{/update-artist/{id}(id=${item.id})}" class="btn btn-success">Edit</a>
                                                 <a th:href="@{/delete_artist/{id}(id=${item.id})}" class="btn btn-danger"
                                                    onclick="return confirm('Are you sure you want to delete your profile')">delete</a>
                                             </td>
@@ -186,13 +191,89 @@
                                         </tbody>
                                     </table>
                                     <!-- Display a message if the portfolio is empty -->
-                                    <div th:unless="${not #lists.isEmpty(portfolios)}">
+                                    <div th:unless="${not #lists.isEmpty(portfolio)}">
                                         <p>No portfolio yet!</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                    </div>
+
+                    <!-- Display Other Registered Portfolios -->
+                    <div class="col-lg-10 mb-4" id="otherPortfolios" style="display: none;">
+
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <!-- Your table content -->
+                                    <table class="table table-bordered" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Artist Email</th>
+                                            <th>Names</th>
+                                            <th>Age</th>
+                                            <th>Nationality</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        <tr th:each="portfolio:${registeredPortfolios}">
+                                            <td th:text="${portfolio.getOwnerEmail()}"></td>
+                                            <td th:text="${portfolio.getName()}"></td>
+                                            <td th:text="${portfolio.getAge()}"></td>
+                                            <td th:text="${portfolio.getNationality()}"></td>
+                                            <td th:text="${portfolio.getMessage()}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- Display a message if the portfolio is empty -->
+                                    <div th:unless="${not #lists.isEmpty(registeredPortfolios)}">
+                                        <p>No portfolio yet!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Search Results Section (initially hidden) -->
+                    <div class="col-lg-10 mb-4" id="searchResultsSection" style="display: none;">
+                        <div class="card shadow mb-4"th:if="${not #lists.isEmpty(searchResults)}">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <!-- Table to display search results -->
+                                    <table class="table table-bordered" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Artist Email</th>
+                                            <th>Names</th>
+                                            <th>Age</th>
+                                            <th>Nationality</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!-- Use Thymeleaf to iterate through search results and display them -->
+                                        <tr th:each="result : ${searchResults}">
+                                            <!-- Display each result -->
+                                            <td th:text="${result.ownerEmail}"></td>
+                                            <td th:text="${result.name}"></td>
+                                            <td th:text="${result.age}"></td>
+                                            <td th:text="${result.nationality}"></td>
+                                            <td th:text="${result.message}"></td>
+                                        </tr>
+                                        <!-- Display a message if search results are empty -->
+                                        <tr th:if="${#lists.isEmpty(searchResults)}">
+                                            <td colspan="7">No search results found.</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Add New Portfolio Section -->
@@ -204,7 +285,7 @@
                             </div>
                             <div class="card-body">
                                 <!-- Your form or content for adding a new portfolio -->
-                                <a class="btn btn-primary" th:href="@{/add_artist}">Add New Portfolio</a>
+                                <a class="btn btn-info" th:href="@{/add_artist}">Add New Portfolio</a>
                             </div>
                         </div>
 
@@ -233,11 +314,20 @@
                 // Function to show/hide sections based on the clicked navigation item
                 function showSection(sectionId) {
                     document.getElementById('registeredPortfoliosSection').style.display = 'none';
+                    document.getElementById('otherPortfolios').style.display = 'none';
+                    document.getElementById('searchResultsSection').style.display = 'none';
                     document.getElementById('addNewPortfolioSection').style.display = 'none';
                     document.getElementById('welcomeSection').style.display = 'none';
-
-                    if (sectionId) {
-                        document.getElementById(sectionId).style.display = 'block';
+                    if (sectionId === 'welcomeSection') {
+                      document.getElementById('welcomeSection').style.display = 'block';
+                    }else if (sectionId === 'registeredPortfoliosSection') {
+                      document.getElementById('registeredPortfoliosSection').style.display = 'block';
+                    } else if (sectionId === 'otherPortfolios') {
+                      document.getElementById('otherPortfolios').style.display = 'block';
+                    }else if (sectionId === 'searchResultsSection') {
+                      document.getElementById('searchResultsSection').style.display = 'block';
+                    }else if (sectionId === 'addNewPortfolioSection') {
+                      document.getElementById('addNewPortfolioSection').style.display = 'block';
                     }
                 }
 
@@ -300,7 +390,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" th:href="@{/index}">Logout</a>
+                <a class="btn btn-danger" th:href="@{/index}">Logout</a>
             </div>
         </div>
     </div>

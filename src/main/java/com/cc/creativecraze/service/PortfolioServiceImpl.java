@@ -2,6 +2,7 @@ package com.cc.creativecraze.service;
 
 import com.cc.creativecraze.dto.PortfolioDto;
 import com.cc.creativecraze.model.Portfolio;
+import com.cc.creativecraze.service.EmailService;
 import com.cc.creativecraze.repository.PortfolioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,15 +21,22 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioDto> getAllPortfolios(String keyword) {
-        if (keyword!=null){
-            return portfolioRepository.search(keyword);
+        if (keyword != null && !keyword.isEmpty()) {
+            return portfolioRepository.search("%" + keyword + "%");
+        } else {
+            List<Portfolio> portfolios = portfolioRepository.findAll();
+            return portfolios.stream()
+                    .map(this::mapToPortfolioDto)
+                    .collect(Collectors.toList());
         }
-         List<Portfolio> portfolios = portfolioRepository.findAll();
-         return portfolios.stream()
-                 .map(this::mapToPortfolioDto)
-                 .collect(Collectors.toList());
-//        return portfolioRepository.findAll();
-
+    }
+    @Override
+    public List<PortfolioDto> getRegisteredPortfolios() {
+        // Implement logic to fetch registered portfolios
+        List<Portfolio> registeredPortfolios = portfolioRepository.findAll();
+        return registeredPortfolios.stream()
+                .map(this::mapToPortfolioDto)
+                .collect(Collectors.toList());
     }
     private PortfolioDto mapToPortfolioDto(Portfolio portfolio){
         PortfolioDto portfolioDto = new PortfolioDto();
@@ -66,8 +74,14 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
     @Override
     public void deletePortfolioById(int id) {
-        portfolioRepository.deleteById(id);
+        Optional<Portfolio> portfolioOptional = portfolioRepository.findById(id);
 
+        if (portfolioOptional.isPresent()) {
+            Portfolio portfolio = portfolioOptional.get();
+            portfolioRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Portfolio not found");
+        }
     }
 
     @Override
@@ -89,22 +103,5 @@ public class PortfolioServiceImpl implements PortfolioService {
     public List<Portfolio> getPortfolioByEmail(String email) {
         return portfolioRepository.findPortfolioByOwnerEmail(email);
     }
-
-//    @Override
-//    public List<Portfolio> searchAndFilterPortfolios(String searchTerm, String filterCriteria) {
-//        if (searchTerm == null && filterCriteria == null) {
-//            // If both searchTerm and filterCriteria are null, return all portfolios
-//            return portfolioRepository.findAll();
-//        } else if (searchTerm != null && filterCriteria == null) {
-//            // If only searchTerm is provided, perform search by ownerEmail
-//            return portfolioRepository.findByOwnerEmailContainingIgnoreCase(searchTerm);
-//        } else if (searchTerm == null && filterCriteria != null) {
-//            // If only filterCriteria is provided, perform filtering by a specific field
-//            return portfolioRepository.findAllByField(filterCriteria);
-//        } else {
-//            // If both searchTerm and filterCriteria are provided, perform combined search and filtering
-//            return portfolioRepository.findByOwnerEmailContainingIgnoreCaseAndField(searchTerm, filterCriteria);
-//        }
-//    }
 
 }

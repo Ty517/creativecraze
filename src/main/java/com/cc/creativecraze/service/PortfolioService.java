@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface PortfolioService {
     List<PortfolioDto> getAllPortfolios(String keyword);
+    List<PortfolioDto> getRegisteredPortfolios();
     Optional<Portfolio> getPortfolioById(int id);
     void savePortfolio(PortfolioDto portfolioDto);
     void deletePortfolioById(int id);
@@ -15,6 +16,5 @@ public interface PortfolioService {
 
     List<Portfolio> getPortfolioByEmail(String email);
 
-//    List<Portfolio> searchAndFilterPortfolios(String searchTerm, String filterCriteria);
 
 }

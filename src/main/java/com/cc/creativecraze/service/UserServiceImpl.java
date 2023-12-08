@@ -5,12 +5,6 @@ import com.cc.creativecraze.model.Role;
 import com.cc.creativecraze.model.User;
 import com.cc.creativecraze.repository.RoleRepository;
 import com.cc.creativecraze.repository.UserRepository;
-import jakarta.annotation.Resource;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +19,12 @@ public class UserServiceImpl implements UserService{
 private final UserRepository userRepository;
 private final RoleRepository roleRepository;
 private final PasswordEncoder passwordEncoder;
-private final JavaMailSender mailSender;
 
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository= roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.mailSender = mailSender;
     }
 
     @Override
@@ -52,7 +44,6 @@ private final JavaMailSender mailSender;
         roles.add(modelRole);
         user.setRoles(roles);
         userRepository.save(user);
-        sendWelcomeEmail(userDto.getName(), userDto.getEmail());
     }
 
     @Override
@@ -81,43 +72,5 @@ private final JavaMailSender mailSender;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         return calendar.getTime();
-    }
-
-    private void sendEmail(String to, String subject, String content) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(content);
-        mailSender.send(message);
-    }
-    private void sendWelcomeEmail(String userName, String userEmail) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-            helper.setTo(userEmail);
-            helper.setSubject("Welcome to Creative Craze");
-
-            // Read the HTML content from the template file
-            String htmlContent = readHtmlTemplate("welcome_email.html");
-
-            // Replace placeholders with actual values
-            htmlContent = htmlContent.replace("[user_name]", userName);
-
-            // Set the HTML content of the email
-            helper.setText(htmlContent, true);
-
-            // Send the email
-            mailSender.send(message);
-        } catch (Exception e) {
-            // Handle exceptions (e.g., mail sending failure)
-            e.printStackTrace();
-        }
-    }
-    private String readHtmlTemplate(String templateName) throws IOException {
-        ClassPathResource resource = new ClassPathResource("templates/" + templateName);
-        try (InputStream inputStream = resource.getInputStream()) {
-            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        }
     }
 }

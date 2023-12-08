@@ -59,7 +59,12 @@
     <li class="nav-item">
       <a class="nav-link" href="javascript:void(0);" onclick="showSection('registeredPortfoliosSection');">
         <i class="fas fa-fw fa-table"></i>
-        <span>Registered Portfolios</span></a>
+        <span>Registered Artist Profiles</span></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:void(0);" onclick="showSection('searchResultsSection');">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Search Artist Result</span></a>
     </li>
 
   </ul>
@@ -80,13 +85,12 @@
         </button>
 
         <!-- Topbar Search -->
-        <form
-                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <form th:action="@{/search}" method="get" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
           <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                   aria-label="Search" aria-describedby="basic-addon2">
+            <input type="text" class="form-control bg-light border-0 small" placeholder="Search Artist..."
+                   aria-label="Search" aria-describedby="basic-addon2" name="keyword">
             <div class="input-group-append">
-              <button class="btn btn-primary" type="button">
+              <button class="btn btn-primary" type="submit">
                 <i class="fas fa-search fa-sm"></i>
               </button>
             </div>
@@ -129,11 +133,11 @@
         <div class="row">
 
           <!-- Display Registered Portfolios -->
-          <div class="col-lg-10 mb-4" id="registeredPortfoliosSection">
+          <div class="col-lg-10 mb-4" id="registeredPortfoliosSection" style="display: none;">
 
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Registered Portfolios</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Registered Artist Profiles</h6>
                 <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" th:href="@{/download-pdf}">
                   <i class="fas fa-download fa-sm text-white-50"></i> Download pdf</a>
               </div>
@@ -145,36 +149,84 @@
                     <tr>
                       <th>OwnerId</th>
                       <th>OwnerEmail</th>
+                      <th>Names</th>
                       <th>Age</th>
                       <th>Nationality</th>
                       <th>Description</th>
-                      <th>Names</th>
                       <th>Action</th>
                     </tr>
                     </thead>
 
                     <tbody>
-                    <tr th:each="portfolio:${portfolios}">
+                    <tr th:each="portfolio:${registeredPortfolios}">
                       <td th:text="${portfolio.getId()}"></td>
                       <td th:text="${portfolio.getOwnerEmail()}"></td>
+                      <td th:text="${portfolio.getName()}"></td>
                       <td th:text="${portfolio.getAge()}"></td>
                       <td th:text="${portfolio.getNationality()}"></td>
                       <td th:text="${portfolio.getMessage()}"></td>
-                      <td th:text="${portfolio.getName()}"></td>
                       <td >
-                          <a th:href="@{/delete_profile/{id}(id =${portfolio.getId()})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this profile')">delete</a>
+                        <a th:href="@{/delete_profile/{id}(id =${portfolio.getId()})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this profile')">Reject</a>
                       </td>
                     </tr>
                     </tbody>
                   </table>
                   <!-- Display a message if the portfolio is empty -->
-                  <div th:unless="${not #lists.isEmpty(portfolios)}">
+                  <div th:unless="${not #lists.isEmpty(registeredPortfolios)}">
                     <p>No portfolio yet!</p>
                   </div>
                 </div>
               </div>
             </div>
 
+          </div>
+
+          <!-- Search Results Section (initially hidden) -->
+          <div class="col-lg-10 mb-4" id="searchResultsSection" style="display: none;">
+            <div class="card shadow mb-4"th:if="${not #lists.isEmpty(searchResults)}">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Search Results</h6>
+                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" th:href="@{/download-pdf}">
+                  <i class="fas fa-download fa-sm text-white-50"></i> Download pdf</a>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <!-- Table to display search results -->
+                  <table class="table table-bordered" width="100%">
+                    <thead>
+                    <tr>
+                      <th>OwnerId</th>
+                      <th>OwnerEmail</th>
+                      <th>Names</th>
+                      <th>Age</th>
+                      <th>Nationality</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Use Thymeleaf to iterate through search results and display them -->
+                    <tr th:each="result : ${searchResults}">
+                      <!-- Display each result -->
+                      <td th:text="${result.id}"></td>
+                      <td th:text="${result.ownerEmail}"></td>
+                      <td th:text="${result.name}"></td>
+                      <td th:text="${result.age}"></td>
+                      <td th:text="${result.nationality}"></td>
+                      <td th:text="${result.message}"></td>
+                      <td >
+                        <a th:href="@{/delete_profile/{id}(id =${result.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this profile')">Reject</a>
+                      </td>
+                    </tr>
+                    <!-- Display a message if search results are empty -->
+                    <tr th:if="${#lists.isEmpty(searchResults)}">
+                      <td colspan="7">No search results found.</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Welcome Section (initially hidden) -->
@@ -201,9 +253,13 @@
     function showSection(sectionId) {
         document.getElementById('registeredPortfoliosSection').style.display = 'none';
         document.getElementById('welcomeSection').style.display = 'none';
-
-        if (sectionId) {
-            document.getElementById(sectionId).style.display = 'block';
+        document.getElementById('searchResultsSection').style.display = 'none';
+        if (sectionId === 'welcomeSection') {
+          document.getElementById('welcomeSection').style.display = 'block';
+        }else if (sectionId === 'registeredPortfoliosSection') {
+          document.getElementById('registeredPortfoliosSection').style.display = 'block';
+        } else if (sectionId === 'searchResultsSection') {
+          document.getElementById('searchResultsSection').style.display = 'block';
         }
     }
 
@@ -250,7 +306,7 @@
       <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" th:href="@{/index}">Logout</a>
+        <a class="btn btn-danger" th:href="@{/index}">Logout</a>
       </div>
     </div>
   </div>

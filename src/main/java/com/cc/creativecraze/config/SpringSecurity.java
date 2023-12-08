@@ -37,6 +37,9 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .csrf().disable()
+                .sessionManagement()
+                .sessionConcurrency(sessionConcurrency -> sessionConcurrency.maximumSessions(-1))
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/index**","/","/js/*","/css/*","/images/**","/register","/reset-password**")
                 .permitAll()
@@ -82,6 +85,6 @@ public class SpringSecurity {
                 .withUser(SecurityConstants.ADMIN_EMAIL)
                 .password(passwordEncoder().encode(SecurityConstants.ADMIN_PASSWORD))
                 .authorities(SecurityConstants.ROLE_ADMIN);
+        auth.inMemoryAuthentication().getUserDetailsService();
     }
 }
-

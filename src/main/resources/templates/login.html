@@ -55,6 +55,9 @@
                       <label class="custom-control-label" for="customCheck">Show password</label>
                     </div>
                   </div>
+                  <div th:if="${loginError}" class="alert alert-danger" role="alert">
+                    <p th:text="${loginError}"></p>
+                  </div>
                   <button type="submit" class="btn btn-primary btn-user btn-block">
                     Login
                   </button>

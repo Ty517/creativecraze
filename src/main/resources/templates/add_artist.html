@@ -32,7 +32,7 @@
         <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-                <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                <div class="col-lg-5 d-none d-lg-block bg-new-image"></div>
                 <div class="col-lg-7">
                     <div class="p-5">
                         <div class="text-center">
@@ -45,7 +45,7 @@
                                     <label for="name">Names</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="name" placeholder="ex:'Lee Reid'" name="name" required/>
+                                    <input type="text" class="form-control" id="name" name="name" th:value="${loggedInUserName}" readonly/>
                                 </div>
                             </div>
                             <!-- 2nd row -->
@@ -54,7 +54,7 @@
                                     <label for="age">Age</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="age" placeholder="ex:'28'" name="age" required/>
+                                    <input type="text" class="form-control" id="age" placeholder="ex:'28'" name="age" required pattern="[1-9][8-9]|[2-9][0-9]" title="Sorry but you have to be atleast 18"/>
                                 </div>
                             </div>
                             <!-- 3rd row -->
@@ -72,7 +72,7 @@
                                     <label for="ownerEmail">Email</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input type="email" class="form-control" id="ownerEmail" placeholder="ex:'example@gmail.com'" name="ownerEmail" required/>
+                                    <input type="email" class="form-control" id="ownerEmail" name="ownerEmail" th:value="${email}" readonly/>
                                 </div>
                             </div>
                             <!-- 5th row -->
@@ -110,8 +110,6 @@
                         </form>
                         <hr>
                         <div class="text-center">
-                            <a class="small" th:href="@{/artist}">Go back to Dashboard</a>
-                        </div><div class="text-center">
                             <a class="small" th:href="@{/index}">Go back to HomePage</a>
                         </div>
                     </div>

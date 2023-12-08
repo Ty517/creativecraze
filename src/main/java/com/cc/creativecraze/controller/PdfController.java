@@ -4,6 +4,7 @@ import com.itextpdf.text.DocumentException;
 import com.cc.creativecraze.model.Portfolio;
 import com.cc.creativecraze.repository.PortfolioRepository;
 import com.cc.creativecraze.service.PdfService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -91,9 +92,13 @@ public class PdfController {
     }
     @GetMapping("/download-portfolio-pdf/{id}")
     public ResponseEntity<byte[]> downloadPortfolioPdf(@PathVariable int id) {
-        Optional<Portfolio> portfolioOptional = portfolioRepository.findById(id);
+        try {
+            Optional<Portfolio> portfolioOptional = portfolioRepository.findById(id);
 
-        if (portfolioOptional.isPresent()) {
+            if (portfolioOptional.isEmpty()) {
+                throw new EntityNotFoundException("Portfolio not found!");
+            }
+
             Portfolio portfolio = portfolioOptional.get();
             byte[] pdfBytes = portfolio.getPdf();
 
@@ -102,9 +107,12 @@ public class PdfController {
             headers.setContentDispositionFormData("attachment", "portfolio.pdf");
 
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            // Handle exception and return appropriate response
+            return ResponseEntity.badRequest().build();
         }
     }
+
+
 }
 
