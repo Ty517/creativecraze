@@ -32,7 +32,7 @@
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">Update Artist Profile!</h1>
                         </div>
-                        <form th:action="@{/update_artist}" method="post" th:object="${portfolio}" >
+                        <form th:action="@{/update_artist}" method="post" th:object="${portfolio}"enctype="multipart/form-data" >
                             <div class="form-group row">
                                 <input type="hidden" th:field="*{id}">
                                 <div class="col-sm-4">
@@ -85,7 +85,7 @@
                             <div class="form-group row">
                                 <div class="col-sm-12">
                                     <label for="message">Description</label>
-                                    <textarea class="form-control" id="message" placeholder="Description" name="message" th:field="*{message}" required></textarea>
+                                    <textarea class="form-control" id="message" placeholder="Briefly Describe Your Work and Yourself" name="message" th:field="*{message}" required></textarea>
                                 </div>
                             </div>
                             <div class="form-group row">

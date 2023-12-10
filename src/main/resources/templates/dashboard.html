@@ -63,8 +63,8 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" href="javascript:void(0);" onclick="showSection('searchResultsSection');">
-        <i class="fas fa-fw fa-table"></i>
-        <span>Search Artist Result</span></a>
+        <i class="fas fa-fw fa-search"></i>
+        <span>Search Artist Results Here!</span></a>
     </li>
 
   </ul>
@@ -133,13 +133,13 @@
         <div class="row">
 
           <!-- Display Registered Portfolios -->
-          <div class="col-lg-10 mb-4" id="registeredPortfoliosSection" style="display: none;">
+          <div class="col-lg-12 mb-4" id="registeredPortfoliosSection" style="display: none;">
 
             <div class="card shadow mb-4">
               <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Registered Artist Profiles</h6>
                 <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" th:href="@{/download-pdf}">
-                  <i class="fas fa-download fa-sm text-white-50"></i> Download pdf</a>
+                  <i class="fas fa-download fa-sm text-white-50"></i> Get Artist Report</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -152,11 +152,25 @@
                       <th>Names</th>
                       <th>Age</th>
                       <th>Nationality</th>
+                      <th>Portfolio</th>
+                      <th>Picture</th>
                       <th>Description</th>
                       <th>Action</th>
                     </tr>
                     </thead>
-
+                    <tfoot>
+                    <tr>
+                      <th>OwnerId</th>
+                      <th>OwnerEmail</th>
+                      <th>Names</th>
+                      <th>Age</th>
+                      <th>Nationality</th>
+                      <th>Portfolio</th>
+                      <th>Picture</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                    </tfoot>
                     <tbody>
                     <tr th:each="portfolio:${registeredPortfolios}">
                       <td th:text="${portfolio.getId()}"></td>
@@ -164,9 +178,31 @@
                       <td th:text="${portfolio.getName()}"></td>
                       <td th:text="${portfolio.getAge()}"></td>
                       <td th:text="${portfolio.getNationality()}"></td>
+                      <td>
+                        <a th:href="@{/get-portfolio/{id}(id=${portfolio.getId()})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                          <span class="text">Portfolio</span>
+                        </a>
+                      </td>
+                      <td>
+                        <a th:href="@{/download-picture/{id}(id=${portfolio.getId()})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                          <span class="text">Picture</span>
+                        </a>
+                      </td>
                       <td th:text="${portfolio.getMessage()}"></td>
                       <td >
-                        <a th:href="@{/delete_profile/{id}(id =${portfolio.getId()})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this profile')">Reject</a>
+                        <a th:href="@{/delete_profile/{id}(id =${portfolio.getId()})}" class="btn btn-danger btn-icon-split btn-sm"
+                           onclick="return confirm('Are you sure you want to delete this artist profile')">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-trash"></i>
+                                                    </span>
+                          <span class="text">Delete</span>
+                        </a>
                       </td>
                     </tr>
                     </tbody>
@@ -182,12 +218,10 @@
           </div>
 
           <!-- Search Results Section (initially hidden) -->
-          <div class="col-lg-10 mb-4" id="searchResultsSection" style="display: none;">
+          <div class="col-lg-12 mb-4" id="searchResultsSection" style="display: none;">
             <div class="card shadow mb-4"th:if="${not #lists.isEmpty(searchResults)}">
               <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Search Results</h6>
-                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" th:href="@{/download-pdf}">
-                  <i class="fas fa-download fa-sm text-white-50"></i> Download pdf</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -200,10 +234,25 @@
                       <th>Names</th>
                       <th>Age</th>
                       <th>Nationality</th>
+                      <th>Portfolio</th>
+                      <th>Picture</th>
                       <th>Description</th>
                       <th>Action</th>
                     </tr>
                     </thead>
+                    <tfoot>
+                    <tr>
+                      <th>OwnerId</th>
+                      <th>OwnerEmail</th>
+                      <th>Names</th>
+                      <th>Age</th>
+                      <th>Nationality</th>
+                      <th>Portfolio</th>
+                      <th>Picture</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                    </tfoot>
                     <tbody>
                     <!-- Use Thymeleaf to iterate through search results and display them -->
                     <tr th:each="result : ${searchResults}">
@@ -213,9 +262,31 @@
                       <td th:text="${result.name}"></td>
                       <td th:text="${result.age}"></td>
                       <td th:text="${result.nationality}"></td>
+                      <td>
+                        <a th:href="@{/get-portfolio/{id}(id=${result.id})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                          <span class="text">Portfolio</span>
+                        </a>
+                      </td>
+                      <td>
+                        <a th:href="@{/download-picture/{id}(id=${result.id})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                          <span class="text">Picture</span>
+                        </a>
+                      </td>
                       <td th:text="${result.message}"></td>
                       <td >
-                        <a th:href="@{/delete_profile/{id}(id =${result.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this profile')">Reject</a>
+                        <a th:href="@{/delete_profile/{id}(id =${result.id})}" class="btn btn-danger btn-icon-split btn-sm"
+                           onclick="return confirm('Are you sure you want to delete this artist profile')">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-trash"></i>
+                                                    </span>
+                          <span class="text">Delete</span>
+                        </a>
                       </td>
                     </tr>
                     <!-- Display a message if search results are empty -->
@@ -230,14 +301,63 @@
           </div>
 
           <!-- Welcome Section (initially hidden) -->
-          <div class="col-lg-7 mb-4" id="welcomeSection" style="display: none;">
+          <div class="col-lg-12 mb-2" id="welcomeSection" style="display: none;">
 
             <div class="card shadow mb-4">
               <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Welcome Admin to Creative Craze Dashboard</h6>
               </div>
               <div class="card-body">
-                <p>This is the dashboard welcome section. Feel free to explore!</p>
+                <p>This is the Admin dashboard welcome section. Feel free to explore!</p>
+              </div>
+              <div class="card-body">
+              <div class="row">
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                  <div class="card-body" href="javascript:void(0);" onclick="showSection('registeredPortfoliosSection');">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="row no-gutters align-items-center">
+                          <a class="nav-link" href="javascript:void(0);" onclick="showSection('registeredPortfoliosSection');">
+                            <i class="fas fa-fw fa-check"></i>
+                            <span>Current Artists</span></a>
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col">
+                            <div class="progress progress-sm mr-2">
+                              <div class="progress-bar bg-info" role="progressbar"
+                                   style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                   aria-valuemax="100"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                  <div class="card-body" href="javascript:void(0);" onclick="showSection('searchResultsSection');">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="row no-gutters align-items-center">
+                          <a class="nav-link" href="javascript:void(0);" onclick="showSection('searchResultsSection');">
+                            <i class="fas fa-fw fa-search"></i>
+                            <span>Search Results</span></a>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
               </div>
             </div>
 

@@ -61,24 +61,24 @@
         <!-- Nav Item - Tables -->
         <li class="nav-item">
             <a class="nav-link" href="javascript:void(0);" onclick="showSection('registeredPortfoliosSection');">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Registered Portfolios</span></a>
+                <i class="fas fa-fw fa-folder"></i>
+                <span>My Profiles</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="javascript:void(0);" onclick="showSection('otherPortfolios');">
                 <i class="fas fa-fw fa-table"></i>
-                <span>All Artist Profiles</span></a>
+                <span>Other Artist Profiles</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="javascript:void(0);" onclick="showSection('searchResultsSection');">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Search Results</span></a>
+                <i class="fas fa-fw fa-search"></i>
+                <span>Search Results Here</span></a>
         </li>
 
         <!-- Nav Item - Portfolio -->
         <li class="nav-item">
             <a class="nav-link" href="javascript:void(0);" onclick="showSection('addNewPortfolioSection');">
-                <i class="fas fa-fw fa-table"></i>
+                <i class="fas fa-fw fa-check"></i>
                 <span>New Portfolio</span></a>
         </li>
 
@@ -149,7 +149,7 @@
                 <div class="row">
 
                     <!-- Display Registered Portfolios -->
-                    <div class="col-lg-10 mb-4" id="registeredPortfoliosSection">
+                    <div class="col-lg-12 mb-4" id="registeredPortfoliosSection">
 
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
@@ -157,7 +157,7 @@
                                 <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                                    th:if="${not #lists.isEmpty(portfolio)}"
                                    th:href="@{/download-artistPdf/{email}(email=${portfolio[0].ownerEmail})}">
-                                    <i class="fas fa-download fa-sm text-white-50"></i> Download pdf
+                                    <i class="fas fa-download fa-sm text-white-50"></i> Your Profile And Portfolios
                                 </a>
                             </div>
                             <div class="card-body">
@@ -170,10 +170,24 @@
                                             <th>Names</th>
                                             <th>Age</th>
                                             <th>Nationality</th>
+                                            <th>Portfolio</th>
+                                            <th>Picture</th>
                                             <th>Description</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>OwnerEmail</th>
+                                            <th>Names</th>
+                                            <th>Age</th>
+                                            <th>Nationality</th>
+                                            <th>Portfolio</th>
+                                            <th>Picture</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </tfoot>
 
                                         <tbody>
                                         <tr th:each="item: ${portfolio}" th:if="${not #lists.isEmpty(portfolio)}">
@@ -181,11 +195,37 @@
                                             <td th:text="${item.name}"></td>
                                             <td th:text="${item.age}"></td>
                                             <td th:text="${item.nationality}"></td>
+                                            <td>
+                                                <a th:href="@{/get-portfolio/{id}(id=${item.id})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                                                    <span class="text">Portfolio</span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/download-picture/{id}(id=${item.id})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                                                    <span class="text">Picture</span>
+                                                </a>
+                                            </td>
                                             <td th:text="${item.message}"></td>
                                             <td>
-                                                <a th:href="@{/update-artist/{id}(id=${item.id})}" class="btn btn-success">Edit</a>
-                                                <a th:href="@{/delete_artist/{id}(id=${item.id})}" class="btn btn-danger"
-                                                   onclick="return confirm('Are you sure you want to delete your profile')">delete</a>
+                                                <a th:href="@{/update-artist/{id}(id=${item.id})}" class="btn btn-warning btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    </span>
+                                                    <span class="text">Edit</span>
+                                                </a>
+                                                <a th:href="@{/delete_artist/{id}(id=${item.id})}" class="btn btn-danger btn-icon-split btn-sm"
+                                                   onclick="return confirm('Are you sure you want to delete your profile')">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-trash"></i>
+                                                    </span>
+                                                    <span class="text">Delete</span>
+                                                </a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -201,7 +241,7 @@
                     </div>
 
                     <!-- Display Other Registered Portfolios -->
-                    <div class="col-lg-10 mb-4" id="otherPortfolios" style="display: none;">
+                    <div class="col-lg-12 mb-4" id="otherPortfolios" style="display: none;">
 
                         <div class="card shadow mb-4">
                             <div class="card-body">
@@ -214,9 +254,22 @@
                                             <th>Names</th>
                                             <th>Age</th>
                                             <th>Nationality</th>
+                                            <th>Portfolio</th>
+                                            <th>Picture</th>
                                             <th>Description</th>
                                         </tr>
                                         </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Artist Email</th>
+                                            <th>Names</th>
+                                            <th>Age</th>
+                                            <th>Nationality</th>
+                                            <th>Portfolio</th>
+                                            <th>Picture</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </tfoot>
 
                                         <tbody>
                                         <tr th:each="portfolio:${registeredPortfolios}">
@@ -224,6 +277,22 @@
                                             <td th:text="${portfolio.getName()}"></td>
                                             <td th:text="${portfolio.getAge()}"></td>
                                             <td th:text="${portfolio.getNationality()}"></td>
+                                            <td>
+                                                <a th:href="@{/get-portfolio/{id}(id=${portfolio.getId()})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                                                    <span class="text">Portfolio</span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/download-picture/{id}(id=${portfolio.getId()})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                                                    <span class="text">Picture</span>
+                                                </a>
+                                            </td>
                                             <td th:text="${portfolio.getMessage()}"></td>
                                         </tr>
                                         </tbody>
@@ -240,7 +309,7 @@
 
 
                     <!-- Search Results Section (initially hidden) -->
-                    <div class="col-lg-10 mb-4" id="searchResultsSection" style="display: none;">
+                    <div class="col-lg-12 mb-4" id="searchResultsSection" style="display: none;">
                         <div class="card shadow mb-4"th:if="${not #lists.isEmpty(searchResults)}">
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -252,9 +321,22 @@
                                             <th>Names</th>
                                             <th>Age</th>
                                             <th>Nationality</th>
+                                            <th>Portfolio</th>
+                                            <th>Picture</th>
                                             <th>Description</th>
                                         </tr>
                                         </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Artist Email</th>
+                                            <th>Names</th>
+                                            <th>Age</th>
+                                            <th>Nationality</th>
+                                            <th>Portfolio</th>
+                                            <th>Picture</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </tfoot>
                                         <tbody>
                                         <!-- Use Thymeleaf to iterate through search results and display them -->
                                         <tr th:each="result : ${searchResults}">
@@ -263,6 +345,22 @@
                                             <td th:text="${result.name}"></td>
                                             <td th:text="${result.age}"></td>
                                             <td th:text="${result.nationality}"></td>
+                                            <td>
+                                                <a th:href="@{/get-portfolio/{id}(id=${result.id})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                                                    <span class="text">Portfolio</span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/download-picture/{id}(id=${result.id})}" class="btn btn-info btn-icon-split btn-sm">
+                                                    <span class="icon text-white-50">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    </span>
+                                                    <span class="text">Picture</span>
+                                                </a>
+                                            </td>
                                             <td th:text="${result.message}"></td>
                                         </tr>
                                         <!-- Display a message if search results are empty -->
@@ -285,14 +383,18 @@
                             </div>
                             <div class="card-body">
                                 <!-- Your form or content for adding a new portfolio -->
-                                <a class="btn btn-info" th:href="@{/add_artist}">Add New Portfolio</a>
+                                <a class="btn btn-success btn-icon-split" th:href="@{/add_artist}">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                    <span class="text">Add New Portfolio</span></a>
                             </div>
                         </div>
 
                     </div>
 
                     <!-- Welcome Section (initially hidden) -->
-                    <div class="col-lg-7 mb-4" id="welcomeSection" style="display: none;">
+                    <div class="col-lg-12 mb-2" id="welcomeSection" style="display: none;">
 
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
@@ -301,10 +403,88 @@
                             <div class="card-body">
                                 <p>This is the dashboard welcome section. Feel free to explore!</p>
                             </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-xl-3 col-md-6 mb-6">
+                                        <div class="card border-left-info shadow h-100 py-2">
+                                            <div class="card-body">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <div class="row no-gutters align-items-center">
+                                                            <a class="nav-link" href="javascript:void(0);" onclick="showSection('registeredPortfoliosSection');">
+                                                                <i class="fas fa-fw fa-cog"></i>
+                                                                <span>Your Profile</span></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 mb-6">
+                                        <div class="card border-left-success shadow h-100 py-2">
+                                            <div class="card-body">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <div class="row no-gutters align-items-center">
+                                                            <a class="nav-link" href="javascript:void(0);" onclick="showSection('searchResultsSection');">
+                                                                <i class="fas fa-fw fa-search"></i>
+                                                                <span>Search Results</span></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        <div class="card border-left-warning shadow h-100 py-2">
+                                            <div class="card-body">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <div class="row no-gutters align-items-center">
+                                                            <a class="nav-link" href="javascript:void(0);" onclick="showSection('otherPortfolios');">
+                                                                <i class="fas fa-fw fa-table"></i>
+                                                                <span>Other Artists</span></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 mb-4">
+                                        <div class="card border-left-danger shadow h-100 py-2">
+                                            <div class="card-body">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <div class="row no-gutters align-items-center">
+                                                            <a class="nav-link" href="javascript:void(0);" onclick="showSection('addNewPortfolioSection');">
+                                                                <i class="fas fa-fw fa-check"></i>
+                                                                <span>Add Profile</span></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
                 <!-- /.row -->
 

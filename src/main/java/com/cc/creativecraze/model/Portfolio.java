@@ -1,10 +1,7 @@
 package com.cc.creativecraze.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.awt.image.BufferedImage;
@@ -14,6 +11,7 @@ import java.util.ArrayList;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 public class Portfolio {
     @Id
@@ -23,8 +21,15 @@ public class Portfolio {
     private String ownerEmail;
     private String age;
     private String nationality;
+    private String pdfFilename;
+    private String pdfContentType;
+    @Column(name = "pdf",length = 10485760, columnDefinition = "bytea")
     private byte[] pdf;
+    private String imageFilename;
+    private String imageContentType;
+    @Column(name = "image",length = 10485760, columnDefinition = "bytea")
     private byte[] image;
     private String message;
+
 
 }

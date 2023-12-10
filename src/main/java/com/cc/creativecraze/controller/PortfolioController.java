@@ -8,6 +8,8 @@ import com.cc.creativecraze.service.EmailService;
 import com.cc.creativecraze.service.PortfolioService;
 import com.cc.creativecraze.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +20,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +39,14 @@ public class PortfolioController {
         this.emailService = emailService;
         this.userService = userService;
     }
+    @InitBinder
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
+            throws ServletException {
 
+        // Convert multipart object to byte[]
+        binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
+
+    }
     @GetMapping("/add_portfolio")
     public  String getPortfolioForm(Model model){
         PortfolioDto portfolioDto = new PortfolioDto();
@@ -44,8 +56,8 @@ public class PortfolioController {
 
 
     @PostMapping("/add_portfolio")
-    public String addPortfolio(@ModelAttribute("portfolio")PortfolioDto portfolioDto){
-        portfolioService.savePortfolio(portfolioDto);
+    public String addPortfolio(@ModelAttribute("portfolio")PortfolioDto portfolioDto, @RequestParam("pdf")MultipartFile imageFile, @RequestParam("image")MultipartFile pdfFile){
+        portfolioService.savePortfolio(portfolioDto, imageFile, pdfFile);
         return "redirect:/admin";
     }
 
@@ -69,8 +81,8 @@ public class PortfolioController {
 
     }
     @PostMapping("/update")
-    public String updatePortfolioForm(@ModelAttribute PortfolioDto portfolioDto){
-        portfolioService.updatePortfolio(portfolioDto);
+    public String updatePortfolioForm(@ModelAttribute PortfolioDto portfolioDto,@RequestParam("pdf")MultipartFile imageFile, @RequestParam("image")MultipartFile pdfFile){
+        portfolioService.updatePortfolio(portfolioDto, imageFile, pdfFile);
         return "redirect:/admin";
     }
     @GetMapping("/update-artist/{id}")
@@ -81,8 +93,8 @@ public class PortfolioController {
 
     }
     @PostMapping("/update_artist")
-    public String updateArtistForm(@ModelAttribute PortfolioDto portfolioDto){
-        portfolioService.updatePortfolio(portfolioDto);
+    public String updateArtistForm(@ModelAttribute PortfolioDto portfolioDto,@RequestParam("pdf")MultipartFile imageFile, @RequestParam("image")MultipartFile pdfFile){
+        portfolioService.updatePortfolio(portfolioDto, imageFile, pdfFile);
         System.out.println("Update Artist Form Called");
         return "redirect:/artist";
     }
@@ -99,8 +111,8 @@ public class PortfolioController {
         return "add_artist";
     }
     @PostMapping("/add_artist")
-    public String addArtist(@ModelAttribute("portfolio") PortfolioDto portfolioDto) {
-        portfolioService.savePortfolio(portfolioDto);
+    public String addArtist(@ModelAttribute("portfolio") PortfolioDto portfolioDto,@RequestParam("pdf")MultipartFile imageFile, @RequestParam("image")MultipartFile pdfFile) {
+        portfolioService.savePortfolio(portfolioDto, imageFile, pdfFile);
 
         // Update user authorities
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

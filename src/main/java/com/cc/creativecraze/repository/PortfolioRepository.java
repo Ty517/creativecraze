@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 //import static org.hibernate.FetchMode.SELECT;
 
@@ -15,8 +16,11 @@ import java.util.List;
 public interface PortfolioRepository extends JpaRepository <Portfolio, Integer> {
     List<Portfolio> findPortfolioByOwnerEmail(String email);
 
-    @Query("SELECT new com.cc.creativecraze.dto.PortfolioDto(p.id, p.name, p.ownerEmail, p.age, p.nationality, p.pdf, p.image, p.message) FROM Portfolio p WHERE CONCAT(p.id, p.ownerEmail, p.age, p.nationality, p.message, p.name) LIKE %?1%")
-    List<PortfolioDto> search(String keyword);
-    @Query("SELECT p.pdf FROM Portfolio p WHERE p.id = :id")
-    byte[] findPdfById(@Param("id") int id);
+    @Query("SELECT new com.cc.creativecraze.dto.PortfolioDto(p.id, p.name, p.ownerEmail, p.age, p.nationality, p.pdfFilename, p.pdfContentType, p.pdf, p.imageFilename, p.imageContentType, p.image, p.message) FROM Portfolio p WHERE CONCAT(p.id, p.ownerEmail, p.age, p.nationality, p.message, p.name) LIKE %:keyword%")
+    List<PortfolioDto> search(@Param("keyword") String keyword);
+    Optional<Portfolio> findPdfById(int id);
+
+    Optional<Portfolio> findPdfByOwnerEmail(String email);
+    Optional<Portfolio> findPicById(int id);
+
 }
